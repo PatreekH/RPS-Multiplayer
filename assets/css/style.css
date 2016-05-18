@@ -1,0 +1,17 @@
+.panel{
+	height: 25%;
+}
+
+#nameinput1{
+	margin-left: 35%;
+	width: 30%;
+}
+
+#nameinput2{
+	margin-left: 35%;
+	width: 30%;
+}
+
+.hide{
+	display: none;
+}
