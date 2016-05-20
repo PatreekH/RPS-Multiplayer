@@ -14,11 +14,6 @@ $("#submitName1").on("click", function() {
 
 	playerNum = 1;
 
-	$("#nameinput1").addClass("hide");
-	$("#nameinput2").removeClass("hide");
-	$("#submitName1").addClass("hide");
-	$("#submitName2").removeClass("hide");
-
 	playGame();
 
 	return false;
@@ -34,10 +29,6 @@ $("#submitName2").on("click", function() {
 
 	playerNum = 2;
 
-	$("#submitName2").addClass("hide");
-	$("#nameinput2").addClass("hide");
-	$(".nameinputlabel").addClass("hide");
-
 	playGame();
 
 	return false;
@@ -47,8 +38,22 @@ $("#submitName2").on("click", function() {
 
 rps.on("child_added", function(snapshot) {
 
-	$(".p1name").html(snapshot.val().name);
-	$(".p2name").html(snapshot.val().name2);
+	var checkName = snapshot.child("name").exists();
+	var checkName2 = snapshot.child("name2").exists();
+
+	if (checkName == true){
+		$(".p1name").html(snapshot.val().name);
+		$("#nameinput1").addClass("hide");
+		$("#nameinput2").removeClass("hide");
+		$("#submitName1").addClass("hide");
+		$("#submitName2").removeClass("hide");
+	}
+	else if (checkName2 == true){
+		$(".p2name").html(snapshot.val().name2);
+		$("#submitName2").addClass("hide");
+		$("#nameinput2").addClass("hide");
+		$(".nameinputlabel").addClass("hide");
+	}
 
 });
 
@@ -75,7 +80,7 @@ function playGame(){
 		$(".user2picks").append(paperDiv);
 		$(".user2picks").append(scissorsDiv);
 
-		$(".user1picks").hide();
+		//$(".user1picks").hide();
 	}
 
 }
