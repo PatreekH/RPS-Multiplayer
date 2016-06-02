@@ -62,9 +62,9 @@ rps.on("child_added", function(snapshot) {
 function playGame(){
 
 	var cTitleDiv = ("<div class='cTitle'>" + "Please make a choice:" + "</div>");
-	var rockDiv = ("<div class='rock'>"  + "Rock" + "</div>");
-	var paperDiv = ("<div class='paper'>"  + "Paper" + "</div>");
-	var scissorsDiv = ("<div class='scissors'>" + "Scissors" + "</div>");
+	var rockDiv = ("<button class='rock'>"  + "Rock" + "</button>");
+	var paperDiv = ("<button class='paper'>"  + "Paper" + "</button>");
+	var scissorsDiv = ("<button class='scissors'>" + "Scissors" + "</button>");
 
 	if (playerNum == 1){
 		$(".user1picks").append(cTitleDiv);
