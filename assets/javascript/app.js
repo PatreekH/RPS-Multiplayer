@@ -14,7 +14,7 @@ $("#submitName1").on("click", function() {
 
 	playerNum = 1;
 
-	playGame();
+	showPicks();
 
 	return false;
 });
@@ -29,7 +29,7 @@ $("#submitName2").on("click", function() {
 
 	playerNum = 2;
 
-	playGame();
+	showPicks();
 
 	return false;
 });
@@ -59,30 +59,125 @@ rps.on("child_added", function(snapshot) {
 
 
 
-function playGame(){
-
-	var cTitleDiv = ("<div class='cTitle'>" + "Please make a choice:" + "</div>");
-	var rockDiv = ("<button class='rock'>"  + "Rock" + "</button>");
-	var paperDiv = ("<button class='paper'>"  + "Paper" + "</button>");
-	var scissorsDiv = ("<button class='scissors'>" + "Scissors" + "</button>");
+function showPicks(){
 
 	if (playerNum == 1){
-		$(".user1picks").append(cTitleDiv);
-		$(".user1picks").append(rockDiv);
-		$(".user1picks").append(paperDiv);
-		$(".user1picks").append(scissorsDiv);
-
-		//$(".user2picks").hide();
+		$(".user1picks").removeClass("hide");
 	}
 	else if (playerNum == 2){
-		$(".user2picks").append(cTitleDiv);
-		$(".user2picks").append(rockDiv);
-		$(".user2picks").append(paperDiv);
-		$(".user2picks").append(scissorsDiv);
-
-		//$(".user1picks").hide();
+		$(".user2picks").removeClass("hide");
 	}
 
 }
 
+var user1choice;
+var user2choice;
+var pick1;
+var pick2;
 
+
+$(".rock").on("click", function() {
+
+var text = ("<div class='choice'>" + "You chose: Rock" + "</div>");
+var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+
+$(".user1picks").html(text);
+$(".user1picks").append(wait);
+
+user1choice = "rock";
+
+rps.push({
+	user1choice: user1choice
+});
+
+userPickCheck();
+
+});
+
+$(".paper").on("click", function() {
+
+var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
+var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+
+$(".user1picks").html(text);
+$(".user1picks").append(wait);
+
+
+});
+
+$(".scissors").on("click", function() {
+
+var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");
+var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+
+$(".user1picks").html(text);
+$(".user1picks").append(wait);
+
+
+});
+
+$(".rock2").on("click", function() {
+
+var text = ("<div class='choice'>" + "You chose: Rock" + "</div>");
+var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+
+$(".user2picks").html(text);
+$(".user2picks").append(wait);
+
+
+});
+
+$(".paper2").on("click", function() {
+
+var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
+var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+
+$(".user2picks").html(text);
+$(".user2picks").append(wait);
+
+user2choice = "paper";
+
+rps.push({
+	user2choice: user2choice
+});
+
+userPickCheck();
+
+});
+
+$(".scissors2").on("click", function() {
+
+var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");
+var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+
+$(".user2picks").html(text);
+$(".user2picks").append(wait);
+
+
+});
+
+//Player 1 is not reciving what user2choice is and visa versa
+
+function userPickCheck() {
+	rps.on("child_added", function(snapshot) {
+
+		var checkpick = snapshot.child("user1choice").exists();
+		var checkpick2 = snapshot.child("user2choice").exists();
+		pick1 = snapshot.val().user1choice;
+		pick2 = snapshot.val().user2choice;
+
+		if (checkpick == true && checkpick2 == true){
+			runGame();
+		}
+
+	});
+
+}
+
+
+function runGame() {
+	if (pick1 == "rock" || pick2 == "paper"){
+		var resultText = ("<div class='resultText'>" + "Player 2 wins!" + "</div>")
+		$(".result").html(resultText);
+	}
+}
