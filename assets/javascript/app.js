@@ -1,41 +1,71 @@
 var database = firebase.database();
 
+
+// Makes the jumbotron background image scroll
+var backgroundScroll = function(params) {
+	params = $.extend({
+		scrollSpeed: 70,
+		imageWidth: $('#bg').width(),
+		imageHeight: $('#bg').height()
+	}, params);
+	
+	var step = 1,
+		current = 0,
+		restartPosition = - (params.imageWidth - params.imageHeight);
+	
+	var scroll = function() {
+		current -= step;
+		if (current == restartPosition){
+			current = 0;
+		}	
+		$('#bg').css('backgroundPosition', current + 'px 0');
+	
+	};
+	
+	this.init = function() {
+		setInterval(scroll, params.scrollSpeed);
+	
+	};
+};
+
+var scroll = new backgroundScroll();
+scroll.init();
+
+//update list: 
+//add reset 
+//add win/lose counter
+//dynamically add buttons and prompts 
+//add actual name to results label
+// - add timer before logic starts?
+//only use one form to get name
+//when disconnect bring form back
+//add chat box
+
 var playerNum;
 
 $("#submitName1").on("click", function() {
-
 	var name = $('#nameinput1').val().trim();
-
 	database.ref('player1').set({
     	name: name
 	});
-
 	playerNum = 1;
-
 	$(".user1wait").removeClass("hide");
-
 	return false;
 });
 
 $("#submitName2").on("click", function() {
-
 	var name2 = $('#nameinput2').val().trim();
-
 	database.ref('player2').set({
     	name2: name2
 	});
-
 	playerNum = 2;
-
 	$(".user2wait").removeClass("hide");
-
 	return false;
 });
 
+// Checks to see if there is a player one
 database.ref("player1").on('value', function(snapshot) {
-
 		var checkName = snapshot.child("name").exists();
-
 		if (checkName === true){
   			$(".p1name").html(snapshot.val().name);
 			$("#nameinput1").addClass("hide");
@@ -45,27 +75,23 @@ database.ref("player1").on('value', function(snapshot) {
 		}
 });
 
-
+// Checks to see if there is a player two, if there is: Starts game by running checkForPicks
 database.ref("player2").on('value', function(snapshot) {
-
 		var checkName2 = snapshot.child("name2").exists();
-
 		if (checkName2 === true){
     		$(".p2name").html(snapshot.val().name2);
 			$("#submitName2").addClass("hide");
 			$("#nameinput2").addClass("hide");
 			$(".nameinputlabel").addClass("hide");
-			checkPicks();
+			checkForPicks();
 		}
 });
 
-
-function checkPicks(){
-
+// Starts the game by checking if player 1 has made a selection.
+function checkForPicks(){
 	database.ref("playerpicks").on('value', function(snapshot) {	
 		var checkPick = snapshot.child("pick").exists();
 		var checkPick2 = snapshot.child("pick2").exists();
-		
 		if (playerNum == 1 && !checkPick){
 			$(".user1wait").addClass("hide");
 			$(".user1picks").removeClass("hide");
@@ -90,7 +116,7 @@ $(".rock").on("click", function() {
 		});
 		$(".user1picks").html(text);
 		$(".user1picks").append(wait);
-		checkPicks();
+		checkForPicks();
 	} else if (playerNum == 2){
 		var user2choice = "rock";
 		var updates = {};
@@ -99,7 +125,7 @@ $(".rock").on("click", function() {
 		database.ref().update(updates);
 		$(".user2picks").html(text);
 		$(".user2picks").append(wait);
-		checkPicks();
+		checkForPicks();
 	}
 
 });
@@ -116,7 +142,7 @@ $(".paper").on("click", function() {
 		});
 		$(".user1picks").html(text);
 		$(".user1picks").append(wait);
-		checkPicks();
+		checkForPicks();
 	} else if (playerNum == 2){
 		var user2choice = "paper";
 		var updates = {};
@@ -125,7 +151,7 @@ $(".paper").on("click", function() {
 		database.ref().update(updates);
 		$(".user2picks").html(text);
 		$(".user2picks").append(wait);
-		checkPicks();
+		checkForPicks();
 	}
 
 });
@@ -142,7 +168,7 @@ $(".scissors").on("click", function() {
 		});
 		$(".user1picks").html(text);
 		$(".user1picks").append(wait);
-		checkPicks();
+		checkForPicks();
 	} else if (playerNum == 2){
 		var user2choice = "scissors";
 		var updates = {};
@@ -151,7 +177,7 @@ $(".scissors").on("click", function() {
 		database.ref().update(updates);
 		$(".user2picks").html(text);
 		$(".user2picks").append(wait);
-		checkPicks();
+		checkForPicks();
 	}
 
 });
