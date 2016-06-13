@@ -1,183 +1,195 @@
-var rps = new Firebase("https://myrpsgame.firebaseio.com/");
+var database = firebase.database();
 
-
-var name = "";
-var name2 = "";
+var playerNum;
 
 $("#submitName1").on("click", function() {
 
-	name = $('#nameinput1').val().trim();
+	var name = $('#nameinput1').val().trim();
 
-	rps.push({
-		name: name
-	})
+	database.ref('player1').set({
+    	name: name
+	});
 
 	playerNum = 1;
 
-	showPicks();
+	$(".user1wait").removeClass("hide");
 
 	return false;
 });
 
 $("#submitName2").on("click", function() {
 
-	name2 = $('#nameinput2').val().trim();
+	var name2 = $('#nameinput2').val().trim();
 
-	rps.push({
-		name2: name2
-	})
+	database.ref('player2').set({
+    	name2: name2
+	});
 
 	playerNum = 2;
 
-	showPicks();
+	$(".user2wait").removeClass("hide");
 
 	return false;
 });
 
+database.ref("player1").on('value', function(snapshot) {
 
+		var checkName = snapshot.child("name").exists();
 
-rps.on("child_added", function(snapshot) {
-
-	var checkName = snapshot.child("name").exists();
-	var checkName2 = snapshot.child("name2").exists();
-
-	if (checkName == true){
-		$(".p1name").html(snapshot.val().name);
-		$("#nameinput1").addClass("hide");
-		$("#nameinput2").removeClass("hide");
-		$("#submitName1").addClass("hide");
-		$("#submitName2").removeClass("hide");
-	}
-	else if (checkName2 == true){
-		$(".p2name").html(snapshot.val().name2);
-		$("#submitName2").addClass("hide");
-		$("#nameinput2").addClass("hide");
-		$(".nameinputlabel").addClass("hide");
-	}
-
+		if (checkName === true){
+  			$(".p1name").html(snapshot.val().name);
+			$("#nameinput1").addClass("hide");
+			$("#nameinput2").removeClass("hide");
+			$("#submitName1").addClass("hide");
+			$("#submitName2").removeClass("hide");
+		}
 });
 
 
+database.ref("player2").on('value', function(snapshot) {
 
-function showPicks(){
+		var checkName2 = snapshot.child("name2").exists();
 
-	if (playerNum == 1){
-		$(".user1picks").removeClass("hide");
-	}
-	else if (playerNum == 2){
-		$(".user2picks").removeClass("hide");
-	}
+		if (checkName2 === true){
+    		$(".p2name").html(snapshot.val().name2);
+			$("#submitName2").addClass("hide");
+			$("#nameinput2").addClass("hide");
+			$(".nameinputlabel").addClass("hide");
+			checkPicks();
+		}
+});
 
+
+function checkPicks(){
+
+	database.ref("playerpicks").on('value', function(snapshot) {	
+		var checkPick = snapshot.child("pick").exists();
+		var checkPick2 = snapshot.child("pick2").exists();
+		
+		if (playerNum == 1 && !checkPick){
+			$(".user1wait").addClass("hide");
+			$(".user1picks").removeClass("hide");
+		} else if (checkPick === true && playerNum == 2 && !checkPick2){
+			$(".user2wait").addClass("hide");
+			$(".user2picks").removeClass("hide");
+		} else if (checkPick === true && checkPick2 === true){
+			comparePicks();
+		}
+	});
 }
-
-var user1choice;
-var user2choice;
-var pick1;
-var pick2;
-
 
 $(".rock").on("click", function() {
 
-var text = ("<div class='choice'>" + "You chose: Rock" + "</div>");
-var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+	var text = ("<div class='choice'>" + "You chose: Rock" + "</div>");
+	var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
 
-$(".user1picks").html(text);
-$(".user1picks").append(wait);
-
-user1choice = "rock";
-
-rps.push({
-	user1choice: user1choice
-});
-
-userPickCheck();
+	if (playerNum == 1){
+		var user1choice = "rock";
+		database.ref('playerpicks').set({
+    		pick: user1choice
+		});
+		$(".user1picks").html(text);
+		$(".user1picks").append(wait);
+		checkPicks();
+	} else if (playerNum == 2){
+		var user2choice = "rock";
+		var updates = {};
+		var key = "pick2";
+		updates['/playerpicks/' + key] = user2choice;
+		database.ref().update(updates);
+		$(".user2picks").html(text);
+		$(".user2picks").append(wait);
+		checkPicks();
+	}
 
 });
 
 $(".paper").on("click", function() {
 
-var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
-var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+	var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
+	var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
 
-$(".user1picks").html(text);
-$(".user1picks").append(wait);
-
+	if (playerNum == 1){
+		var user1choice = "paper";
+		database.ref('playerpicks').set({
+    		pick: user1choice
+		});
+		$(".user1picks").html(text);
+		$(".user1picks").append(wait);
+		checkPicks();
+	} else if (playerNum == 2){
+		var user2choice = "paper";
+		var updates = {};
+		var key = "pick2";
+		updates['/playerpicks/' + key] = user2choice;
+		database.ref().update(updates);
+		$(".user2picks").html(text);
+		$(".user2picks").append(wait);
+		checkPicks();
+	}
 
 });
 
 $(".scissors").on("click", function() {
 
-var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");
-var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
+	var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");
+	var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
 
-$(".user1picks").html(text);
-$(".user1picks").append(wait);
-
-
-});
-
-$(".rock2").on("click", function() {
-
-var text = ("<div class='choice'>" + "You chose: Rock" + "</div>");
-var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
-
-$(".user2picks").html(text);
-$(".user2picks").append(wait);
-
-
-});
-
-$(".paper2").on("click", function() {
-
-var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
-var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
-
-$(".user2picks").html(text);
-$(".user2picks").append(wait);
-
-user2choice = "paper";
-
-rps.push({
-	user2choice: user2choice
-});
-
-userPickCheck();
-
-});
-
-$(".scissors2").on("click", function() {
-
-var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");
-var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
-
-$(".user2picks").html(text);
-$(".user2picks").append(wait);
-
-
-});
-
-//Player 1 is not reciving what user2choice is and visa versa
-
-function userPickCheck() {
-	rps.on("child_added", function(snapshot) {
-
-		var checkpick = snapshot.child("user1choice").exists();
-		var checkpick2 = snapshot.child("user2choice").exists();
-		pick1 = snapshot.val().user1choice;
-		pick2 = snapshot.val().user2choice;
-
-		if (checkpick == true && checkpick2 == true){
-			runGame();
-		}
-
-	});
-
-}
-
-
-function runGame() {
-	if (pick1 == "rock" || pick2 == "paper"){
-		var resultText = ("<div class='resultText'>" + "Player 2 wins!" + "</div>")
-		$(".result").html(resultText);
+	if (playerNum == 1){
+		var user1choice = "scissors";
+		database.ref('playerpicks').set({
+    		pick: user1choice
+		});
+		$(".user1picks").html(text);
+		$(".user1picks").append(wait);
+		checkPicks();
+	} else if (playerNum == 2){
+		var user2choice = "scissors";
+		var updates = {};
+		var key = "pick2";
+		updates['/playerpicks/' + key] = user2choice;
+		database.ref().update(updates);
+		$(".user2picks").html(text);
+		$(".user2picks").append(wait);
+		checkPicks();
 	}
+
+});
+
+function comparePicks() {
+	database.ref("playerpicks").on('value', function(snapshot) {	
+		var user1pick = snapshot.val().pick;
+		var user2pick = snapshot.val().pick2;
+		var p1winText = ("<div class='resultText'>" + "Player 1 wins!" + "</div>");
+		var p2winText = ("<div class='resultText'>" + "Player 2 wins!" + "</div>");
+		var drawText = ("<div class='resultText'>" + "It's a draw!" + "</div>");
+
+		if (user1pick == "rock" && user2pick == "rock") {
+			$(".result").html(drawText);
+
+		} else if (user1pick == "rock" && user2pick == "paper") {
+			$(".result").html(p2winText);
+
+		} else if (user1pick == "rock" && user2pick == "scissors") {
+			$(".result").html(p1winText);
+
+		} else if (user1pick == "paper" && user2pick == "paper") {
+			$(".result").html(drawText);
+
+		} else if (user1pick == "paper" && user2pick == "rock") {
+			$(".result").html(p1winText);
+
+		} else if (user1pick == "paper" && user2pick == "scissors") {
+			$(".result").html(p2winText);
+
+		} else if (user1pick == "scissors" && user2pick == "scissors") {
+			$(".result").html(drawText);
+
+		} else if (user1pick == "scissors" && user2pick == "paper") {
+			$(".result").html(p1winText);
+
+		} else if (user1pick == "scissors" && user2pick == "rock") {
+			$(".result").html(p2winText);
+		}
+	});
 }
