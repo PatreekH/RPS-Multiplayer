@@ -1,10 +1,10 @@
 var database = firebase.database();
 
 
-// Makes the jumbotron background image scroll
+// Makes the title background image scroll
 var backgroundScroll = function(params) {
 	params = $.extend({
-		scrollSpeed: 70,
+		scrollSpeed: 30,
 		imageWidth: $('#bg').width(),
 		imageHeight: $('#bg').height()
 	}, params);
@@ -31,61 +31,59 @@ var backgroundScroll = function(params) {
 var scroll = new backgroundScroll();
 scroll.init();
 
-//update list: 
-//add reset 
-//add win/lose counter
-//dynamically add buttons and prompts 
-//add actual name to results label
-// - add timer before logic starts?
-//only use one form to get name
-//when disconnect bring form back
-//add chat box
-
 var playerNum;
 
-$("#submitName1").on("click", function() {
-	var name = $('#nameinput1').val().trim();
-	database.ref('player1').set({
-    	name: name
-	});
-	playerNum = 1;
-	$(".user1wait").removeClass("hide");
-	return false;
-});
-
-$("#submitName2").on("click", function() {
-	var name2 = $('#nameinput2').val().trim();
-	database.ref('player2').set({
-    	name2: name2
-	});
-	playerNum = 2;
-	$(".user2wait").removeClass("hide");
-	return false;
+database.ref("playerNames").on('value', function(snapshot) {
+	var player1Name = snapshot.child("name").exists();
+	var player2Name = snapshot.child("name2").exists();
+		if (!player1Name){
+			$("#submitName1").on("click", function() {
+				var name = $('#nameinput1').val().trim();
+				database.ref("playerNames").set({
+					name: name
+				});
+				playerNum = 1;
+				$(".user1wait").removeClass("hide");
+				$(".user1wait").html("Waiting for other player to join...");
+				return false;
+			});
+		} else if (player1Name === true && !player2Name){
+			$("#submitName1").on("click", function() {
+				var name2 = $('#nameinput1').val().trim();
+				var updateName = {};
+				var namekey = "name2";
+				updateName['/playerNames/' + namekey] = name2;
+				database.ref().update(updateName);
+				playerNum = 2;
+				$(".user2wait").removeClass("hide");
+				return false;
+			});
+		}
 });
 
 // Checks to see if there is a player one
-database.ref("player1").on('value', function(snapshot) {
+database.ref("playerNames").on('value', function(snapshot) {
 		var checkName = snapshot.child("name").exists();
 		if (checkName === true){
   			$(".p1name").html(snapshot.val().name);
-			$("#nameinput1").addClass("hide");
-			$("#nameinput2").removeClass("hide");
-			$("#submitName1").addClass("hide");
-			$("#submitName2").removeClass("hide");
 		}
 });
 
 // Checks to see if there is a player two, if there is: Starts game by running checkForPicks
-database.ref("player2").on('value', function(snapshot) {
+database.ref("playerNames").on('value', function(snapshot) {
 		var checkName2 = snapshot.child("name2").exists();
 		if (checkName2 === true){
     		$(".p2name").html(snapshot.val().name2);
-			$("#submitName2").addClass("hide");
-			$("#nameinput2").addClass("hide");
-			$(".nameinputlabel").addClass("hide");
+    		hideForm();
 			checkForPicks();
 		}
 });
+
+function hideForm() {
+	$("#submitName1").addClass("hide");
+	$("#nameinput1").addClass("hide");
+	$(".nameinputlabel").addClass("hide");
+}
 
 // Starts the game by checking if player 1 has made a selection.
 function checkForPicks(){
@@ -95,6 +93,8 @@ function checkForPicks(){
 		if (playerNum == 1 && !checkPick){
 			$(".user1wait").addClass("hide");
 			$(".user1picks").removeClass("hide");
+		} else if (playerNum == 2 && !checkPick){
+			$(".user2wait").html("Waiting for other player to make a selection...");
 		} else if (checkPick === true && playerNum == 2 && !checkPick2){
 			$(".user2wait").addClass("hide");
 			$(".user2picks").removeClass("hide");
@@ -114,8 +114,10 @@ $(".rock").on("click", function() {
 		database.ref('playerpicks').set({
     		pick: user1choice
 		});
-		$(".user1picks").html(text);
-		$(".user1picks").append(wait);
+		$(".user1picks").addClass("hide");
+		$(".user1wait").removeClass("hide");
+		$(".user1wait").html(text);
+		$(".user1wait").append(wait);
 		checkForPicks();
 	} else if (playerNum == 2){
 		var user2choice = "rock";
@@ -123,8 +125,10 @@ $(".rock").on("click", function() {
 		var key = "pick2";
 		updates['/playerpicks/' + key] = user2choice;
 		database.ref().update(updates);
-		$(".user2picks").html(text);
-		$(".user2picks").append(wait);
+		$(".user2picks").addClass("hide");
+		$(".user2wait").removeClass("hide");
+		$(".user2wait").html(text);
+		$(".user2wait").append(wait);
 		checkForPicks();
 	}
 
@@ -140,8 +144,10 @@ $(".paper").on("click", function() {
 		database.ref('playerpicks').set({
     		pick: user1choice
 		});
-		$(".user1picks").html(text);
-		$(".user1picks").append(wait);
+		$(".user1picks").addClass("hide");
+		$(".user1wait").removeClass("hide");
+		$(".user1wait").html(text);
+		$(".user1wait").append(wait);
 		checkForPicks();
 	} else if (playerNum == 2){
 		var user2choice = "paper";
@@ -149,8 +155,10 @@ $(".paper").on("click", function() {
 		var key = "pick2";
 		updates['/playerpicks/' + key] = user2choice;
 		database.ref().update(updates);
-		$(".user2picks").html(text);
-		$(".user2picks").append(wait);
+		$(".user2picks").addClass("hide");
+		$(".user2wait").removeClass("hide");
+		$(".user2wait").html(text);
+		$(".user2wait").append(wait);
 		checkForPicks();
 	}
 
@@ -166,8 +174,10 @@ $(".scissors").on("click", function() {
 		database.ref('playerpicks').set({
     		pick: user1choice
 		});
-		$(".user1picks").html(text);
-		$(".user1picks").append(wait);
+		$(".user1picks").addClass("hide");
+		$(".user1wait").removeClass("hide");
+		$(".user1wait").html(text);
+		$(".user1wait").append(wait);
 		checkForPicks();
 	} else if (playerNum == 2){
 		var user2choice = "scissors";
@@ -175,8 +185,10 @@ $(".scissors").on("click", function() {
 		var key = "pick2";
 		updates['/playerpicks/' + key] = user2choice;
 		database.ref().update(updates);
-		$(".user2picks").html(text);
-		$(".user2picks").append(wait);
+		$(".user2picks").addClass("hide");
+		$(".user2wait").removeClass("hide");
+		$(".user2wait").html(text);
+		$(".user2wait").append(wait);
 		checkForPicks();
 	}
 
@@ -192,30 +204,48 @@ function comparePicks() {
 
 		if (user1pick == "rock" && user2pick == "rock") {
 			$(".result").html(drawText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "rock" && user2pick == "paper") {
 			$(".result").html(p2winText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "rock" && user2pick == "scissors") {
 			$(".result").html(p1winText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "paper" && user2pick == "paper") {
 			$(".result").html(drawText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "paper" && user2pick == "rock") {
 			$(".result").html(p1winText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "paper" && user2pick == "scissors") {
 			$(".result").html(p2winText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "scissors" && user2pick == "scissors") {
 			$(".result").html(drawText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "scissors" && user2pick == "paper") {
 			$(".result").html(p1winText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 
 		} else if (user1pick == "scissors" && user2pick == "rock") {
 			$(".result").html(p2winText);
+			database.ref("playerpicks").remove();
+			checkForPicks()
 		}
 	});
 }
