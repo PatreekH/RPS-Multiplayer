@@ -1,12 +1,21 @@
-var database = firebase.database();
+// Rock Paper Scissor Multiplayer by Patrick Hernandez
 
+//win/lose counter
+//show name in result box
+//show each choice in result box
+//add timer before result?
+//add chat box
+//show form on disconnect
+
+// Firebase ref.
+var database = firebase.database();
 
 // Makes the title background image scroll
 var backgroundScroll = function(params) {
 	params = $.extend({
-		scrollSpeed: 30,
-		imageWidth: $('#bg').width(),
-		imageHeight: $('#bg').height()
+		scrollSpeed: 35,
+		imageWidth: $('.bg').width(),
+		imageHeight: $('.bg').height()
 	}, params);
 	
 	var step = 1,
@@ -18,7 +27,7 @@ var backgroundScroll = function(params) {
 		if (current == restartPosition){
 			current = 0;
 		}	
-		$('#bg').css('backgroundPosition', current + 'px 0');
+		$('.bg').css('backgroundPosition', current + 'px 0');
 	
 	};
 	
@@ -31,8 +40,10 @@ var backgroundScroll = function(params) {
 var scroll = new backgroundScroll();
 scroll.init();
 
-var playerNum;
 
+// Sends the player's name to firebase based on the order they joined the game
+// Sets the first player to join the game as PlayerNum 1 and the second to PlayerNum 2
+var playerNum;
 database.ref("playerNames").on('value', function(snapshot) {
 	var player1Name = snapshot.child("name").exists();
 	var player2Name = snapshot.child("name2").exists();
@@ -79,6 +90,7 @@ database.ref("playerNames").on('value', function(snapshot) {
 		}
 });
 
+// Hides name form
 function hideForm() {
 	$("#submitName1").addClass("hide");
 	$("#nameinput1").addClass("hide");
@@ -104,6 +116,7 @@ function checkForPicks(){
 	});
 }
 
+// Sends 'rock' to the firebase as the players choice if rock is chosen.
 $(".rock").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Rock" + "</div>");
@@ -134,6 +147,7 @@ $(".rock").on("click", function() {
 
 });
 
+// Sends 'paper' to the firebase as the players choice if rock is chosen.
 $(".paper").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
@@ -164,6 +178,7 @@ $(".paper").on("click", function() {
 
 });
 
+// Sends 'scissors' to the firebase as the players choice if rock is chosen.
 $(".scissors").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");
@@ -194,6 +209,8 @@ $(".scissors").on("click", function() {
 
 });
 
+// After the users have picked this function will run, comparing both picks and determining who wins
+// After comparing, this will reset the game so player 1 can pick again, prompting an automatic rematch
 function comparePicks() {
 	database.ref("playerpicks").on('value', function(snapshot) {	
 		var user1pick = snapshot.val().pick;

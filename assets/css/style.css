@@ -1,9 +1,10 @@
 body{
 }
 
-#bg{
+.bg{
 	background-image: url(../rpsbg.png);
 	background-repeat: repeat-x;
+	height: 323px;
 }
 
 .panel{
