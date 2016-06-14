@@ -48,8 +48,8 @@ database.ref("playerNames").on('value', function(snapshot) {
 	var player1Name = snapshot.child("name").exists();
 	var player2Name = snapshot.child("name2").exists();
 		if (!player1Name){
-			$("#submitName1").on("click", function() {
-				var name = $('#nameinput1').val().trim();
+			$("#submitName").on("click", function() {
+				var name = $('#nameinput').val().trim();
 				database.ref("playerNames").set({
 					name: name
 				});
@@ -59,8 +59,8 @@ database.ref("playerNames").on('value', function(snapshot) {
 				return false;
 			});
 		} else if (player1Name === true && !player2Name){
-			$("#submitName1").on("click", function() {
-				var name2 = $('#nameinput1').val().trim();
+			$("#submitName").on("click", function() {
+				var name2 = $('#nameinput').val().trim();
 				var updateName = {};
 				var namekey = "name2";
 				updateName['/playerNames/' + namekey] = name2;
@@ -73,6 +73,7 @@ database.ref("playerNames").on('value', function(snapshot) {
 });
 
 // Checks to see if there is a player one
+// Checks to see if there is a player two, if there is: Starts game by running checkForPicks
 database.ref("playerNames").on('value', function(snapshot) {
 		var checkName = snapshot.child("name").exists();
 		if (checkName === true){
@@ -80,24 +81,25 @@ database.ref("playerNames").on('value', function(snapshot) {
 		}
 });
 
-// Checks to see if there is a player two, if there is: Starts game by running checkForPicks
 database.ref("playerNames").on('value', function(snapshot) {
 		var checkName2 = snapshot.child("name2").exists();
 		if (checkName2 === true){
-    		$(".p2name").html(snapshot.val().name2);
+  			$(".p2name").html(snapshot.val().name2);
     		hideForm();
-			checkForPicks();
+			checkForPicks();;
 		}
 });
 
 // Hides name form
 function hideForm() {
-	$("#submitName1").addClass("hide");
-	$("#nameinput1").addClass("hide");
+	$("#submitName").addClass("hide");
+	$("#nameinput").addClass("hide");
 	$(".nameinputlabel").addClass("hide");
 }
 
 // Starts the game by checking if player 1 has made a selection.
+// If player 1 has made a choice, asks and checks player 2's selection.
+// If both players have made a choice, run comparePicks
 function checkForPicks(){
 	database.ref("playerpicks").on('value', function(snapshot) {	
 		var checkPick = snapshot.child("pick").exists();
@@ -147,7 +149,7 @@ $(".rock").on("click", function() {
 
 });
 
-// Sends 'paper' to the firebase as the players choice if rock is chosen.
+// Sends 'paper' to the firebase as the players choice if paper is chosen.
 $(".paper").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
@@ -178,7 +180,7 @@ $(".paper").on("click", function() {
 
 });
 
-// Sends 'scissors' to the firebase as the players choice if rock is chosen.
+// Sends 'scissors' to the firebase as the players choice if scissors is chosen.
 $(".scissors").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");

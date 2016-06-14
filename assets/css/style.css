@@ -1,24 +1,26 @@
 body{
 }
 
+.rpsTitle{
+	margin-top: 0%;
+	margin-bottom: 2%;
+}
+
 .bg{
 	background-image: url(../rpsbg.png);
 	background-repeat: repeat-x;
 	height: 323px;
+	margin: none;
+	padding-top: 2%;
 }
 
 .panel{
 	height: 25%;
 }
 
-#nameinput1{
-	margin-left: 35%;
-	width: 30%;
-}
-
-#nameinput2{
-	margin-left: 35%;
-	width: 30%;
+#nameinput{
+	margin-left: 45%;
+	width: 10%;
 }
 
 .hide{
