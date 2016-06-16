@@ -1,6 +1,7 @@
 // Rock Paper Scissor Multiplayer by Patrick Hernandez
 
-//win/lose counter
+//H I Ws
+
 //show name in result box
 //show each choice in result box
 //add timer before result?
@@ -81,7 +82,6 @@ database.ref("playerInfo").on('value', function(snapshot) {
   			$(".p1name").html(snapshot.val().name);
 		}
 });
-
 database.ref("playerInfo").on('value', function(snapshot) {
 		var checkName2 = snapshot.child("name2").exists();
 		if (checkName2 === true){
@@ -92,7 +92,7 @@ database.ref("playerInfo").on('value', function(snapshot) {
 		}
 });
 
-// Hides name form
+// Hides name form after player two has entered the game
 function hideForm() {
 	$("#submitName").addClass("hide");
 	$("#nameinput").addClass("hide");
@@ -117,7 +117,7 @@ var drawCount = 0;
 }
 
 // Starts the game by checking if player 1 has made a selection.
-// If player 1 has made a choice, asks and checks player 2's selection.
+// If player 1 has made a choice, asks for and checks player 2's selection.
 // If both players have made a choice, run comparePicks
 function checkForPicks(){
 	database.ref("playerpicks").on('value', function(snapshot) {
@@ -158,9 +158,6 @@ $(".rock").on("click", function() {
 		updates['/playerpicks/' + key] = user2choice;
 		database.ref().update(updates);
 		$(".user2picks").addClass("hide");
-		$(".user2wait").removeClass("hide");
-		$(".user2wait").html(text);
-		$(".user2wait").append(wait);
 		checkForPicks();
 	}
 });
@@ -186,9 +183,6 @@ $(".paper").on("click", function() {
 		updates['/playerpicks/' + key] = user2choice;
 		database.ref().update(updates);
 		$(".user2picks").addClass("hide");
-		$(".user2wait").removeClass("hide");
-		$(".user2wait").html(text);
-		$(".user2wait").append(wait);
 		checkForPicks();
 	}
 });
@@ -214,18 +208,14 @@ $(".scissors").on("click", function() {
 		updates['/playerpicks/' + key] = user2choice;
 		database.ref().update(updates);
 		$(".user2picks").addClass("hide");
-		$(".user2wait").removeClass("hide");
-		$(".user2wait").html(text);
-		$(".user2wait").append(wait);
 		checkForPicks();
 	}
 });
 
-// After the users have each picked this function will run, comparing both picks and determining who wins
+// After the users have each picked this function will run, comparing both picks and determining who wins the match
+// Also removes both user picks from the database after they are compared, this sets up the reset for later.
 function comparePicks() {
-	var updateStatus = {};
-	var statusKey = "status";
-	database.ref("playerpicks").on('value', function(snapshot) {	
+	database.ref("playerpicks").once('value').then(function(snapshot) {	
 		var user1pick = snapshot.val().pick;
 		var user2pick = snapshot.val().pick2;
 		var p1winText = ("<div class='resultText'>" + "Player 1 wins!" + "</div>");
@@ -256,37 +246,49 @@ function comparePicks() {
 	});
 }
 
-// Updates counts in firebase based on the comparison outcome.
-// Also resets the game so player 1 can pick again, prompting an automatic rematch
+// Updates counts in the database based on the comparison outcome via "status".
 function updateCounts() {
 	database.ref("counts").once('value').then(function(snapshot) {
 		var currDrawCount = snapshot.val().drawCount;
 		var currP1winCount = snapshot.val().p1wins;
 		var currP2winCount = snapshot.val().p2wins;
-		var counter = 1;
 		if (status == "draw"){
 			var drawUpdates = {};
-			var newDrawCount = currDrawCount + counter;
+			var newDrawCount = currDrawCount += 1;
 			var drawKey = "drawCount";
 			drawUpdates['/counts/' + drawKey] = newDrawCount;
 			database.ref().update(drawUpdates);
-			checkForPicks();
+			postCounts();
 
 		} else if (status == "p1win"){
 			var p1winUpdates = {};
-			var newp1Count = currP1winCount + counter;
+			var newp1Count = currP1winCount += 1;
 			var p1winKey = "p1wins";
 			p1winUpdates['/counts/' + p1winKey] = newp1Count;
 			database.ref().update(p1winUpdates);
-			checkForPicks();
+			postCounts();
 
 		} else if (status == "p2win"){
 			var p2winUpdates = {};
-			var newp2Count = currP2winCount + counter;
+			var newp2Count = currP2winCount += 1;
 			var p2winKey = "p2wins";
 			p2winUpdates['/counts/' + p2winKey] = newp2Count;
 			database.ref().update(p2winUpdates);
-			checkForPicks();
+			postCounts();
 		}
 	});
 };
+
+// Posts updated counts to UI, 
+// Resets game so player 1 can choose again, prompting an automatic rematch
+function postCounts() {
+	database.ref("counts").once('value').then(function(snapshot) {
+		var p1WinsNum = snapshot.val().p1wins;
+		var p2WinsNum = snapshot.val().p2wins;
+		var drawCountNum = snapshot.val().drawCount;
+		$(".p1wins").html("Player 1 wins: " + p1WinsNum);
+		$(".p2wins").html("Player 2 wins: " + p2WinsNum);
+		$(".draws").html("Draws: " + drawCountNum);
+		checkForPicks();
+	});
+}

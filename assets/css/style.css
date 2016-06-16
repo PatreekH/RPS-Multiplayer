@@ -6,6 +6,18 @@ body{
 	margin-bottom: 2.25%;
 }
 
+.p1wins{
+	float: left;
+}
+
+.p2wins{
+	float: right;
+}
+
+.draws{
+	text-align: center;
+}
+
 .bg{
 	background-image: url(../rpsbg.png);
 	background-repeat: repeat-x;
