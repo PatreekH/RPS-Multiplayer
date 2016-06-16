@@ -231,44 +231,23 @@ function comparePicks() {
 		var p1winText = ("<div class='resultText'>" + "Player 1 wins!" + "</div>");
 		var p2winText = ("<div class='resultText'>" + "Player 2 wins!" + "</div>");
 		var drawText = ("<div class='resultText'>" + "It's a draw!" + "</div>");
-
 		if (user1pick == user2pick) {
 			$(".result").html(drawText);
 			database.ref("playerpicks").remove();
 			status = "draw";
 			updateCounts();
-
-		} else if (user1pick == "rock" && user2pick == "paper") {
-			$(".result").html(p2winText);
-			database.ref("playerpicks").remove();
-			status = "p2win";
-			updateCounts();
-			
-		} else if (user1pick == "rock" && user2pick == "scissors") {
+		}
+		else if (user1pick == "rock" && user2pick == "scissors" || 
+			user1pick == "paper" && user2pick == "rock" || 
+			user1pick == "scissors" && user2pick == "paper") {
 			$(".result").html(p1winText);
 			database.ref("playerpicks").remove();
 			status = "p1win";
 			updateCounts();
-			
-		} else if (user1pick == "paper" && user2pick == "rock") {
-			$(".result").html(p1winText);
-			database.ref("playerpicks").remove();
-			status = "p1win";
-			updateCounts();
-			
-		} else if (user1pick == "paper" && user2pick == "scissors") {
-			$(".result").html(p2winText);
-			database.ref("playerpicks").remove();
-			status = "p2win";
-			updateCounts();
-
-		} else if (user1pick == "scissors" && user2pick == "paper") {
-			$(".result").html(p1winText);
-			database.ref("playerpicks").remove();
-			status = "p1win";
-			updateCounts();
-
-		} else if (user1pick == "scissors" && user2pick == "rock") {
+		}
+		else if (user1pick == "rock" && user2pick == "paper" || 
+			user1pick == "paper" && user2pick == "scissors" || 
+			user1pick == "scissors" && user2pick == "rock") {
 			$(".result").html(p2winText);
 			database.ref("playerpicks").remove();
 			status = "p2win";
