@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>RPS Multiplayer</title>
+	<title>Rock Paper Scissors</title>
   <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
@@ -8,6 +8,7 @@
   <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
   <script type="text/javascript" src="assets/javascript/app.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
@@ -24,11 +25,10 @@
     </form>
 </div>
 
-<div class="container">
-  <div class="row">
+  <div class="row rowAttr">
 
     <!-- Player1 Panel -->
-      <div class="col-lg-4">
+      <div class="col-lg-3 boxAttr">
         <div class="panel panel-default panel">
 
           <div class="panel-heading">
@@ -48,7 +48,7 @@
       </div>
 
           <!-- Middle Panel -->
-      <div class="col-lg-4">
+      <div class="col-lg-2 boxAttr">
         <div class="panel panel-default panel">
 
           <div class="panel-heading">
@@ -68,7 +68,7 @@
       </div>
 
     <!-- Player2 Panel -->
-      <div class="col-lg-4">
+      <div class="col-lg-3 boxAttr">
         <div class="panel panel-default panel">
 
           <div class="panel-heading">
@@ -87,14 +87,22 @@
         </div>
       </div>
 
+          <!-- Chat Panel -->
+      <div class="col-lg-3 chatBoxAttr">
+        <div class="container chatBox">
+    		<div class="messagesWrap">
+         		<ul class="messages"></ul>
+     		</div>
+
+  			<form action="" class="chat">
+    			<input type='text' id='chatNameInput' placeholder='Username' required maxlength=10> 
+    			<input type='text' id='messageInput'  placeholder='Type a message...' required maxlength=140>
+    			<input type="submit" id='sendButton' value="Send">
+  			</form>
+		</div>
+      </div>
+
     </div>
-</div>
-
-
-
-
-
-
 
 <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
 <script>

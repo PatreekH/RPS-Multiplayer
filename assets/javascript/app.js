@@ -35,6 +35,56 @@ var backgroundScroll = function(params) {
 var scroll = new backgroundScroll();
 scroll.init();
 
+// Runs chat box
+  var messageField = $('#messageInput');
+  var nameField = $('#chatNameInput');
+  var messageList = $('.messages');
+
+  function addMessage(data) {
+    var username = data.name || 'anonymous';
+    var message = data.text;
+
+    // Create an element
+    var nameElement = $('<strong>').text(username);
+    var messageElement = $('<li>').text(message).prepend(nameElement);
+
+    // Add the message to the DOM
+    messageList.append(messageElement);
+
+    // Scroll to the bottom of the message list
+    messageList[0].scrollTop = messageList[0].scrollHeight;
+  }
+
+  // Listen for the form submit
+  $('.chat').on('submit',function(e) {
+
+    // stops the --> form from <-- lol submitting
+    e.preventDefault();
+
+    // create a message object
+    var message = {
+      name : nameField.val(),
+      text : messageField.val()
+    }
+
+
+	addMessage(message);
+    // Save Data to firebase
+    //database.push(message);
+
+    // clear message field
+    messageField.val('');
+
+  });
+
+
+  // Add a callback that is triggered for each chat message
+  // this is kind of like an Ajax request, but they come in via websockets
+  // 10 of them will load on page load, and any future messages will as well
+  //database.limitToLast(10).on('child_added', function (snapshot) {
+    // Get data from returned
+  //});
+
 
 // Global vars
 var playerNum;
@@ -43,6 +93,7 @@ var user2choice;
 var updates = {};
 var key = "pick2";
 var status;
+var wait = ("<div class='wait'>" + "Waiting for other player to make a selection..." + "</div>");
 
 // Sends the player's name to the database based on the order they joined the game
 // Sets the first player to join the game as PlayerNum 1 and the second to PlayerNum 2
@@ -141,7 +192,6 @@ function checkForPicks(){
 $(".rock").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Rock" + "</div>");
-	var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
 
 	if (playerNum == 1){
 		user1choice = "rock";
@@ -166,7 +216,6 @@ $(".rock").on("click", function() {
 $(".paper").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Paper" + "</div>");
-	var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
 
 	if (playerNum == 1){
 		user1choice = "paper";
@@ -191,7 +240,6 @@ $(".paper").on("click", function() {
 $(".scissors").on("click", function() {
 
 	var text = ("<div class='choice'>" + "You chose: Scissors" + "</div>");
-	var wait = ("<div class='wait'>" + "Waiting for other player..." + "</div>");
 
 	if (playerNum == 1){
 		user1choice = "scissors";
@@ -289,6 +337,10 @@ function postCounts() {
 		$(".p1wins").html("Player 1 wins: " + p1WinsNum);
 		$(".p2wins").html("Player 2 wins: " + p2WinsNum);
 		$(".draws").html("Draws: " + drawCountNum);
+		if (playerNum == 2){
+			$(".user2wait").html(wait);
+			$(".user2wait").removeClass("hide");
+		}
 		checkForPicks();
 	});
 }
