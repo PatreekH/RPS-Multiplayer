@@ -1,12 +1,16 @@
 // Rock Paper Scissor Multiplayer by Patrick Hernandez
 
-//H I Ws
+//How it works:
+//---
 
-//show name in result box
+//---
+
+//style cols to fit better
+//style chat box
 //show each choice in result box
 //add timer before result?
-//add chat box
 //show form on disconnect
+//clear chat on both disconnect
 
 // Firebase ref.
 var database = firebase.database();
@@ -40,50 +44,49 @@ scroll.init();
   var nameField = $('#chatNameInput');
   var messageList = $('.messages');
 
-  function addMessage(data) {
-    var username = data.name || 'anonymous';
-    var message = data.text;
-
-    // Create an element
-    var nameElement = $('<strong>').text(username);
-    var messageElement = $('<li>').text(message).prepend(nameElement);
-
-    // Add the message to the DOM
-    messageList.append(messageElement);
-
-    // Scroll to the bottom of the message list
-    messageList[0].scrollTop = messageList[0].scrollHeight;
-  }
-
   // Listen for the form submit
-  $('.chat').on('submit',function(e) {
+$('.chat').on('submit', function(e) {
 
-    // stops the --> form from <-- lol submitting
+    // Stops the form from submitting
     e.preventDefault();
 
-    // create a message object
+    // Create a message object
     var message = {
-      name : nameField.val(),
+      name : $('#nameinput').val().trim(),
       text : messageField.val()
     }
 
+    // Save data to firebase with unique reference key
+  	var newMessageKey = firebase.database().ref().child('messages').push().key;
+  	var messageUpdates = {};
+  	messageUpdates['/messages/' + newMessageKey] = message;
+  	database.ref().update(messageUpdates);
 
-	addMessage(message);
-    // Save Data to firebase
-    //database.push(message);
 
-    // clear message field
+    // Clear message field after sending message
     messageField.val('');
+});
 
-  });
+// Pulls data from firebase and runs addMessage
+database.ref("messages").on('child_added', function(snapshot) {
+  addMessage(snapshot.val());
+});
 
+// Adds data from firebase to page
+function addMessage(data) {
+	var username = data.name || 'anonymous';
+	var message = data.text;
 
-  // Add a callback that is triggered for each chat message
-  // this is kind of like an Ajax request, but they come in via websockets
-  // 10 of them will load on page load, and any future messages will as well
-  //database.limitToLast(10).on('child_added', function (snapshot) {
-    // Get data from returned
-  //});
+	// Create an element
+	var nameElement = $('<strong>').text(username);
+	var messageElement = $('<li>').text(message).prepend(nameElement);
+
+	// Add the message to the DOM
+	messageList.append(messageElement);
+
+	// Scroll to the bottom of the message list
+	messageList[0].scrollTop = messageList[0].scrollHeight;
+}
 
 
 // Global vars
