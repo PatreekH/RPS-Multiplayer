@@ -1,10 +1,10 @@
 <html>
 <head>
-	<title>Rock Paper Scissors</title>
+  <title>Rock Paper Scissors</title>
   <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-  <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
   <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
   <script type="text/javascript" src="assets/javascript/app.js"></script>
@@ -25,7 +25,9 @@
     </form>
 </div>
 
-  <div class="row rowAttr">
+<div class="row rowAttr">
+
+<div class="row rowAttr">
 
     <!-- Player1 Panel -->
       <div class="col-lg-3 boxAttr">
@@ -36,10 +38,10 @@
           </div>
 
           <div class="panel-body user1picks hide">
-          	<div class='cTitle'>Please make a choice:</div>
-          	<button class='rock'>Rock</button>
-          	<button class='paper'>Paper</button>
-          	<button class='scissors'>Scissors</button>
+            <div class='cTitle'>Please make a choice:</div>
+            <button class='rock'>Rock</button>
+            <button class='paper'>Paper</button>
+            <button class='scissors'>Scissors</button>
           </div>
 
           <div class="panel-body user1wait hide"></div>
@@ -77,9 +79,9 @@
 
           <div class="panel-body user2picks hide">
             <div class='cTitle'>Please make a choice:</div>
-          	<button class='rock'>Rock</button>
-          	<button class='paper'>Paper</button>
-          	<button class='scissors'>Scissors</button>
+            <button class='rock'>Rock</button>
+            <button class='paper'>Paper</button>
+            <button class='scissors'>Scissors</button>
           </div>
 
           <div class="panel-body user2wait hide"></div>
@@ -87,34 +89,60 @@
         </div>
       </div>
 
+
+</div>
+
+<div class="row rowAttr">
+  <div class="col-lg-8 boxAttr">
+      <div class="panel panel-default panel">
+
+        <div class="panel-heading">
+              <h3>Results</h3>
+        </div>
+
+        <div class="panel-body">
+        </div>
+
+      </div>
+  </div>
+</div>
+
           <!-- Chat Panel -->
       <div class="col-lg-3 chatBoxAttr">
         <div class="container chatBox">
-    		<div class="messagesWrap">
-         		<ul class="messages"></ul>
-     		</div>
+        <div class="messagesWrap">
+            <ul class="messages"></ul>
+        </div>
 
-  			<form action="" class="chat">
-    			<input type='text' id='chatNameInput' placeholder='Username' required maxlength=10> 
-    			<input type='text' id='messageInput'  placeholder='Type a message...' required maxlength=140>
-    			<input type="submit" id='sendButton' value="Send">
-  			</form>
-		</div>
+        <form action="" class="chat">
+          <input type='text' id='chatNameInput' placeholder='Username' required maxlength=10> 
+          <input type='text' id='messageInput'  placeholder='Type a message...' required maxlength=140>
+          <input type="submit" id='sendButton' value="Send">
+        </form>
+        </div>
       </div>
 
-    </div>
 
-<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+</div>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase.js"></script>
 <script>
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyAGm0USl9Pe7KD5NCJM7hSf3wcGW-WVrEw",
-    authDomain: "rps-game-5ac38.firebaseapp.com",
-    databaseURL: "https://rps-game-5ac38.firebaseio.com",
-    storageBucket: "rps-game-5ac38.appspot.com",
+    apiKey: "AIzaSyCq4HEgZK4-hAMD6rDBWPptUxKh1O3YsLY",
+    authDomain: "rockpapersciossrs.firebaseapp.com",
+    databaseURL: "https://rockpapersciossrs.firebaseio.com",
+    storageBucket: "rockpapersciossrs.appspot.com",
   };
   firebase.initializeApp(config);
+  //var database = firebase.database();
 </script>
+    
 <script src="https://code.jquery.com/jquery-2.2.3.js" type="text/javascript"></script>
 <script src="assets/javascript/app.js" type="text/javascript"></script>
 </body>
