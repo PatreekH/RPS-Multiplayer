@@ -1,14 +1,5 @@
 // Rock Paper Scissor Multiplayer by Patrick Hernandez
 
-//How it works:
-//---
-
-//---
-
-//style cols to fit better
-//style chat box
-//show each choice in result box
-//add timer before result?
 //show form on disconnect
 //clear chat on both disconnect
 
@@ -44,26 +35,26 @@ scroll.init();
   var nameField = $('#chatNameInput');
   var messageList = $('.messages');
 
-  // Listen for the form submit
+// Listen for the form submit
 $('.chat').on('submit', function(e) {
 
-    // Stops the form from submitting
+// Stops the form from submitting
     e.preventDefault();
 
-    // Create a message object
+// Create a message object
     var message = {
       name : $('#nameinput').val().trim(),
       text : messageField.val()
     }
 
-    // Save data to firebase with unique reference key
+// Save data to firebase with unique reference key
   	var newMessageKey = firebase.database().ref().child('messages').push().key;
   	var messageUpdates = {};
   	messageUpdates['/messages/' + newMessageKey] = message;
   	database.ref().update(messageUpdates);
 
 
-    // Clear message field after sending message
+// Clear message field after sending message
     messageField.val('');
 });
 
@@ -72,24 +63,24 @@ database.ref("messages").on('child_added', function(snapshot) {
   addMessage(snapshot.val());
 });
 
-// Adds data from firebase to page
+// Adds message data from firebase to page
 function addMessage(data) {
 	var username = data.name || 'anonymous';
 	var message = data.text;
 
-	// Create an element
-	var nameElement = $('<strong>').text(username);
+// Create an element
+	var nameElement = $('<strong>').text(username + ":");
 	var messageElement = $('<li>').text(message).prepend(nameElement);
 
-	// Add the message to the DOM
+// Add the message to the DOM
 	messageList.append(messageElement);
 
-	// Scroll to the bottom of the message list
+// Scroll to the bottom of the message list
 	messageList[0].scrollTop = messageList[0].scrollHeight;
 }
 
 
-// Global vars
+// Global variables
 var playerNum;
 var user1choice;
 var user2choice;
@@ -100,10 +91,11 @@ var wait = ("<div class='wait'>" + "Waiting for other player to make a selection
 
 // Sends the player's name to the database based on the order they joined the game
 // Sets the first player to join the game as PlayerNum 1 and the second to PlayerNum 2
+// If both players exist: Starts game by running checkForPicks
 database.ref("playerInfo").on('value', function(snapshot) {
 	var player1Name = snapshot.child("name").exists();
 	var player2Name = snapshot.child("name2").exists();
-		if (!player1Name){
+	if (!player1Name){
 			$("#submitName").on("click", function() {
 				var name = $('#nameinput').val().trim();
 				database.ref("playerInfo").set({
@@ -125,24 +117,27 @@ database.ref("playerInfo").on('value', function(snapshot) {
 				$(".user2wait").removeClass("hide");
 				return false;
 			});
+		} else if (player1Name === true && player2Name === true){
+			hideForm();
+    		setCounts();
+			checkForPicks();
 		}
 });
 
-// Checks to see if there is a player one
-// Checks to see if there is a player two, if there is: Starts game by running checkForPicks
+// Checks to see if there is a player 1
+// Checks to see if there is a player 2
+// Sets Player 1 to P1 div, sets Player 2 to P2 div
 database.ref("playerInfo").on('value', function(snapshot) {
 		var checkName = snapshot.child("name").exists();
 		if (checkName === true){
   			$(".p1name").html(snapshot.val().name);
 		}
 });
+
 database.ref("playerInfo").on('value', function(snapshot) {
 		var checkName2 = snapshot.child("name2").exists();
 		if (checkName2 === true){
   			$(".p2name").html(snapshot.val().name2);
-    		hideForm();
-    		setCounts();
-			checkForPicks();
 		}
 });
 
@@ -155,9 +150,9 @@ function hideForm() {
 
 // Sets the counts to 0 in firebase if there isn't an already existing count set
 function setCounts() {
-var p1winCount = 0;
-var p2winCount = 0;
-var drawCount = 0;
+	var p1winCount = 0;
+	var p2winCount = 0;
+	var drawCount = 0;
 	database.ref("counts").on('value', function(snapshot){
 		var resetCheck = snapshot.child("drawCount").exists();
 		if (!resetCheck){
@@ -272,25 +267,24 @@ function comparePicks() {
 		var p1winText = ("<div class='resultText'>" + "Player 1 wins!" + "</div>");
 		var p2winText = ("<div class='resultText'>" + "Player 2 wins!" + "</div>");
 		var drawText = ("<div class='resultText'>" + "It's a draw!" + "</div>");
+		$('.picksDiv').html("<div class='p1pick'>" + user1pick + "</div>");
+		$('.picksDiv').append("<div class='p2pick'>" + user2pick + "</div>");
 		if (user1pick == user2pick) {
-			$(".result").html(drawText);
-			database.ref("playerpicks").remove();
+			$('.picksDiv').append(drawText);
 			status = "draw";
 			updateCounts();
 		}
 		else if (user1pick == "rock" && user2pick == "scissors" || 
 			user1pick == "paper" && user2pick == "rock" || 
 			user1pick == "scissors" && user2pick == "paper") {
-			$(".result").html(p1winText);
-			database.ref("playerpicks").remove();
+			$('.picksDiv').append(p1winText);
 			status = "p1win";
 			updateCounts();
 		}
 		else if (user1pick == "rock" && user2pick == "paper" || 
 			user1pick == "paper" && user2pick == "scissors" || 
 			user1pick == "scissors" && user2pick == "rock") {
-			$(".result").html(p2winText);
-			database.ref("playerpicks").remove();
+			$('.picksDiv').append(p2winText);
 			status = "p2win";
 			updateCounts();
 		}
@@ -299,6 +293,7 @@ function comparePicks() {
 
 // Updates counts in the database based on the comparison outcome via "status".
 function updateCounts() {
+	database.ref("playerpicks").remove();
 	database.ref("counts").once('value').then(function(snapshot) {
 		var currDrawCount = snapshot.val().drawCount;
 		var currP1winCount = snapshot.val().p1wins;
@@ -337,9 +332,9 @@ function postCounts() {
 		var p1WinsNum = snapshot.val().p1wins;
 		var p2WinsNum = snapshot.val().p2wins;
 		var drawCountNum = snapshot.val().drawCount;
-		$(".p1wins").html("Player 1 wins: " + p1WinsNum);
-		$(".p2wins").html("Player 2 wins: " + p2WinsNum);
-		$(".draws").html("Draws: " + drawCountNum);
+		$(".p1wins").html("P1 wins: <br>" + p1WinsNum);
+		$(".p2wins").html("P2 wins: <br>" + p2WinsNum);
+		$(".draws").html("Draws: <br>" + drawCountNum);
 		if (playerNum == 2){
 			$(".user2wait").html(wait);
 			$(".user2wait").removeClass("hide");

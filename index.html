@@ -25,88 +25,71 @@
     </form>
 </div>
 
+<!-- Content Row -->
 <div class="row overAllRowAttr">
 
-<!-- <div class="row playerRowAttr"> -->
+<!-- Player1 Panel -->
+  <div class="col-lg-3 boxAttr">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title p1name">Player 1</h3>
+      </div>
+      <div class="panel-body user1picks hide">
+        <div class='cTitle'>Please make a choice:</div>
+        <button class='rock'>Rock</button>
+        <button class='paper'>Paper</button>
+        <button class='scissors'>Scissors</button>
+      </div>
+      <div class="panel-body user1wait hide"></div>
+    </div>
+  </div>
 
-    <!-- Player1 Panel -->
-      <div class="col-lg-3 boxAttr">
-        <div class="panel panel-default panel">
+<!-- Score Panel -->
+  <div class="col-lg-2 boxAttr">
+    <div class="panel panel-default panel">
+      <div class="panel-heading">
+        <h3 class="panel-title">Score</h3>
+      </div>
+      <div class='panel-body score p1wins'></div>
+      <div class='panel-body score p2wins'></div>
+      <div class='panel-body score draws'></div>
+    </div>
+  </div>
 
-          <div class="panel-heading">
-            <h3 class="panel-title p1name">Player 1</h3>
-          </div>
+<!-- Player2 Panel -->
+  <div class="col-lg-3 boxAttr">
+    <div class="panel panel-default panel">
+      <div class="panel-heading">
+        <h3 class="panel-title p2name">Player 2</h3>
+      </div>
+      <div class="panel-body user2picks hide">
+        <div class='cTitle'>Please make a choice:</div>
+        <button class='rock'>Rock</button>
+        <button class='paper'>Paper</button>
+        <button class='scissors'>Scissors</button>
+      </div>
+      <div class="panel-body user2wait hide"></div>
+    </div>
+  </div>
 
-          <div class="panel-body user1picks hide">
-            <div class='cTitle'>Please make a choice:</div>
-            <button class='rock'>Rock</button>
-            <button class='paper'>Paper</button>
-            <button class='scissors'>Scissors</button>
-          </div>
-
-          <div class="panel-body user1wait hide"></div>
-
-        </div>
+<!-- Chat Panel -->
+  <div class="col-lg-3 chatBoxAttr">
+    <div class="container chatBox">
+      <div class="messagesWrap">
+        <ul class="messages"></ul>
       </div>
 
-          <!-- Middle Panel -->
-      <div class="col-lg-2 boxAttr">
-        <div class="panel panel-default panel">
-
-          <div class="panel-heading">
-            <h3 class="panel-title">Score</h3>
-          </div>
-
-          <div class="panel-body result">
-          </div>
-
-          <div class='panel-body p1wins'></div>
-
-          <div class='panel-body p2wins'></div>
-
-          <div class='panel-body draws'></div>
-
-        </div>
-      </div>
-
-    <!-- Player2 Panel -->
-      <div class="col-lg-3 boxAttr">
-        <div class="panel panel-default panel">
-
-          <div class="panel-heading">
-            <h3 class="panel-title p2name">Player 2</h3>
-          </div>
-
-          <div class="panel-body user2picks hide">
-            <div class='cTitle'>Please make a choice:</div>
-            <button class='rock'>Rock</button>
-            <button class='paper'>Paper</button>
-            <button class='scissors'>Scissors</button>
-          </div>
-
-          <div class="panel-body user2wait hide"></div>
-
-        </div>
-      </div>
-
-
-<!-- </div> -->
-
-          <!-- Chat Panel -->
-      <div class="col-lg-3 chatBoxAttr">
-        <div class="container chatBox">
-        <div class="messagesWrap">
-            <ul class="messages"></ul>
-        </div>
-
+      <div class="chatform">
         <form action="" class="chat">
+         <!-- <span class="chatname">Name</span> -->
           <input type='text' id='messageInput'  placeholder='Type a message...' required maxlength=140>
           <input type="submit" id='sendButton' value="Send">
         </form>
-        </div>
       </div>
+    </div>
+  </div>
 
-      <!-- <div class="row resultsRowAttr"> -->
+<!-- Results Panel -->
   <div class="col-lg-8 resultBoxAttr">
       <div class="panel panel-default resultsPanel">
 
@@ -114,17 +97,12 @@
               <h3 class="panel-title">Results</h3>
         </div>
 
-        <div class="panel-body">
-        </div>
+        <div class='panel-body picksDiv'></div>
 
       </div>
   </div>
-<!-- </div> -->
-
 
 </div>
-
-
 
 <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
