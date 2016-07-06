@@ -141,6 +141,36 @@ database.ref("playerInfo").on('value', function(snapshot) {
 		}
 });
 
+// If there is a disconnect, alerts remaining user and resets the game (from any point in the game)
+database.ref("playerInfo").once('child_removed', function(snapshot) {
+	showForm();
+	$(".p1name").html("Player 1");
+	$(".p2name").html("Player 2");
+	$(".score").empty();
+	$(".picksDiv").empty();
+	$('#nameinput').val('');
+	$(".user1picks").addClass("hide");
+	$(".user2picks").addClass("hide");
+	$(".user1wait").empty();
+	$(".user2wait").empty();
+	$(".messages").empty();
+	alert("The other player has disconnected! Please rejoin to play again.");
+	window.location.reload();
+});
+
+// Removes user data on disconnect
+database.ref("playerInfo").onDisconnect().remove();
+database.ref("playerpicks").onDisconnect().remove();
+database.ref("counts").onDisconnect().remove();
+database.ref("messages").onDisconnect().remove();
+
+// Shows name form after players have disconnected
+function showForm(){
+	$("#submitName").removeClass("hide");
+	$("#nameinput").removeClass("hide");
+	$(".nameinputlabel").removeClass("hide");
+}
+
 // Hides name form after player two has entered the game
 function hideForm() {
 	$("#submitName").addClass("hide");
